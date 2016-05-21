@@ -1,0 +1,22 @@
+#!/usr/bin/expect -f
+
+set country   [lindex $argv 0]
+set province  [lindex $argv 1]
+set city      [lindex $argv 2]
+set company   [lindex $argv 3]
+set division  [lindex $argv 4]
+set hostname  [lindex $argv 5]
+set email     [lindex $argv 6]
+set challenge [lindex $argv 7]
+
+spawn openssl req -newkey rsa:1024 -nodes -out consul.csr -keyout consul.key
+expect -re {Country Name \(2 letter code\) [^:]*:} {send "${country}\n"}
+expect -re {State or Province Name \(full name\) [^:]*:} {send "${province}\n"}
+expect -re {Locality Name \(eg, city\) [^:]*:} {send "${city}\n"}
+expect -re {Organization Name \(eg, company\) [^:]*:} {send "${company}\n"}
+expect -re {Organizational Unit Name \(eg, section\) [^:]*:} {send "${division}\n"}
+expect -re {Common Name \(e.g. server FQDN or YOUR name\) [^:]*:} {send "${hostname}\n"}
+expect -re {Email Address [^:]*:} {send "${email}\n"}
+expect -re {A challenge password [^:]*:} {send "${challenge}\n"}
+expect -re {An optional company name [^:]*:} {send "\n"}
+expect eof
